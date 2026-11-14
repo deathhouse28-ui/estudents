@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>e-students – Дигитална подкрепа за всяко дете</title>
+<style>
+:root{--blue:#1d4ed8;--blue-d:#1e3a8a;--blue-l:#e8efff;--ink:#0f172a;--mut:#64748b;--line:#e2e8f0;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button{font:inherit;cursor:pointer}
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{width:100%;max-width:400px;border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 8px 30px rgba(29,78,216,.08);background:#fff}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:24px;color:var(--blue)}
+.logo i{width:38px;height:38px;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;font-style:normal;font-size:20px}
+.card p{color:var(--mut);margin:10px 0 18px}
+input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;margin-bottom:10px;background:#fff}
+input:focus,textarea:focus{outline:2px solid var(--blue);border-color:transparent}
+textarea{min-height:64px;resize:vertical}
+.btn{padding:11px 16px;border:0;border-radius:10px;background:var(--blue);color:#fff;font-weight:600}
+.btn:hover{background:var(--blue-d)}
+.btn.w{width:100%}
+.btn2{padding:10px 14px;border:1px solid var(--blue);background:#fff;color:var(--blue);border-radius:10px;font-weight:600}
+.btn2:hover{background:var(--blue-l)}
+.btn2.red{border-color:#dc2626;color:#dc2626}.btn2.red:hover{background:#fef2f2}
+.btn2.act{background:#dc2626;color:#fff;border-color:#dc2626}
+.err{color:#dc2626;font-size:14px;min-height:20px;margin:0 0 6px}
+.ok{color:#15803d;font-size:14px;margin:4px 0 0}
+.hint{font-size:12.5px;color:var(--mut);margin-top:14px;line-height:1.5;background:#f8faff;border-radius:10px;padding:10px 12px}
+#app{display:none;min-height:100vh}
+header{position:sticky;top:0;z-index:5;background:var(--blue);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 16px}
+header .logo{color:#fff;font-size:20px}
+header .logo i{background:#fff;color:var(--blue);width:32px;height:32px;font-size:17px}
+#burger{display:none;background:none;border:0;color:#fff;font-size:24px}
+.sp{flex:1}
+.who{display:flex;align-items:center;gap:8px;font-size:14px}
+.pimg,.av{border-radius:50%;object-fit:cover;flex-shrink:0}
+.av{display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;width:36px;height:36px}
+.who .av,.who .pimg{width:34px;height:34px;border:2px solid #fff}
+.wrap{display:flex;min-height:calc(100vh - 56px)}
+aside{width:250px;background:var(--blue-d);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column}
+aside .item{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;color:#dbe6ff;padding:12px;border-radius:10px;text-align:left;font-size:15px}
+aside .item:hover,aside .item.on{background:rgba(255,255,255,.14);color:#fff}
+.out2{margin-top:auto;border-top:1px solid rgba(255,255,255,.15)!important;border-radius:0 0 10px 10px!important}
+.chev{margin-left:auto;transition:transform .2s}
+.open .chev{transform:rotate(180deg)}
+.sub{display:none;padding:4px 0 6px 12px}
+.open+.sub{display:block}
+.sub button{width:100%;text-align:left;background:none;border:0;color:#c3d3ff;padding:9px 12px 9px 22px;border-radius:8px;font-size:14px;position:relative}
+.sub button::before{content:"";position:absolute;left:8px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#7c9bf5}
+.sub button:hover{background:rgba(255,255,255,.1);color:#fff}
+.sub button.on{background:#fff;color:var(--blue-d);font-weight:700}
+main{flex:1;padding:24px;min-width:0}
+h1{margin:0 0 4px;font-size:26px}
+.lead{color:var(--mut);margin:0 0 20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:16px}
+.stat b{display:block;font-size:28px;color:var(--blue)}
+.stat span{color:var(--mut);font-size:14px}
+.tools{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.tools input{max-width:230px;margin:0}
+.tag{background:var(--blue-l);color:var(--blue);padding:6px 12px;border-radius:99px;font-size:14px;font-weight:600}
+.panel{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;background:#f8faff}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row input{flex:1;min-width:150px;margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.kid{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;position:relative}
+.kid:hover{border-color:var(--blue);box-shadow:0 4px 14px rgba(29,78,216,.1)}
+.rm .kid{border-color:#fca5a5;background:#fef2f2}
+.rm .kid::after{content:"✕";position:absolute;right:8px;top:6px;color:#dc2626;font-size:12px}
+.kid span{font-weight:600}
+.num{color:var(--mut);font-size:12px;margin-left:auto;font-style:normal}
+.md{display:none;position:fixed;inset:0;z-index:20;background:rgba(15,23,42,.45);justify-content:center;overflow:auto;padding:20px 12px}
+.md.on{display:flex}
+.mb{position:relative;width:100%;max-width:620px;background:#fff;border-radius:16px;padding:22px;margin:auto 0}
+.x{position:absolute;top:12px;right:12px;border:0;background:var(--blue-l);color:var(--blue);width:32px;height:32px;border-radius:50%}
+.mh{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.mh .av{width:48px;height:48px;font-size:16px}.mh h2{margin:0;font-size:20px}.mh small{color:var(--mut)}
+.sec{font-size:13px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 8px}
+.mt{border-left:3px solid var(--blue);background:#f8faff;border-radius:0 10px 10px 0;padding:10px 12px;margin-bottom:8px;font-size:14px}
+.mt b{display:block;margin-bottom:2px}.mt .f{color:#b45309}.mt .g{color:#15803d}
+details{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:#fff}
+summary{padding:14px;font-weight:700;cursor:pointer;list-style:none;display:flex;gap:10px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"▾";margin-left:auto;color:var(--blue)}
+details[open] summary::after{transform:rotate(180deg)}
+details[open]{border-color:var(--blue)}
+.dc{padding:0 14px 14px;font-size:14.5px;line-height:1.55}
+.dc ul{margin:8px 0 0;padding-left:20px}.dc li{margin-bottom:4px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.sbox{border:1px solid var(--line);border-radius:14px;padding:18px}
+.sbox h3{margin:0 0 12px}
+.big{width:84px;height:84px;font-size:26px;border:3px solid var(--blue-l)}
+img.big{width:84px;height:84px}
+.pr{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.ul{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.ul small{color:var(--mut);display:block}
+.ul .btn2{margin-left:auto;padding:7px 12px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 14px;border-radius:12px;display:none;gap:12px;align-items:center;z-index:30;font-size:14px;max-width:92vw}
+.toast.on{display:flex}
+.toast button{background:none;border:0;color:#93c5fd;font-weight:700}
+.kid.sel{border-color:var(--blue);background:var(--blue-l);box-shadow:0 0 0 2px var(--blue)}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;font-size:13px}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.bdg{margin-left:auto;background:var(--blue);color:#fff;border-radius:99px;font-size:11px;padding:2px 7px}
+.tg{display:inline-flex;align-items:center;gap:6px;background:var(--blue-l);color:var(--blue-d);border-radius:8px;padding:4px 8px;font-size:13px;margin:2px 4px 2px 0}
+.tg button{border:0;background:none;color:#dc2626;padding:0 2px}
+@media(max-width:760px){
+#burger{display:block}.who span{display:none}
+aside{position:fixed;top:56px;bottom:0;left:0;z-index:4;transform:translateX(-100%);transition:transform .2s;overflow:auto}
+aside.show{transform:none}
+main{padding:16px}
+}
+</style>
+</head>
+<body>
+<section id="login">
+  <div class="card">
+    <div class="logo"><i>e</i>e-students</div>
+    <p>Дигитална подкрепа за всяко дете</p>
+    <input id="em" type="email" placeholder="Имейл" value="uchitel@e-students.bg">
+    <input id="pw" type="password" placeholder="Парола" value="demo1234">
+    <div class="err" id="le"></div>
+    <button class="btn w" id="go">Вход</button>
+    <div class="hint">Демо профили:<br>Учител – uchitel@e-students.bg / demo1234<br>Админ – admin@e-students.bg / admin123</div>
+  </div>
+</section>
+
+<div id="app">
+  <header>
+    <button id="burger" aria-label="Меню">☰</button>
+    <div class="logo"><i>e</i>e-students</div>
+    <div class="sp"></div>
+    <div class="who" id="who"></div>
+  </header>
+  <div class="wrap">
+    <aside id="side"></aside>
+    <main id="main"></main>
+  </div>
+</div>
+
+<div class="md" id="md"><div class="mb">
+  <button class="x" id="mx" aria-label="Затвори">✕</button>
+  <div class="mh" id="mh"></div>
+  <div class="sec">Предишни срещи с учителя</div>
+  <div id="mhist"></div>
+  <textarea id="nt" placeholder="Нова бележка от среща…"></textarea>
+  <button class="btn2" id="addn">Запази бележката</button>
+</div></div>
+<div class="toast" id="toast"><span id="tt"></span><button id="tu">Отмяна</button></div>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]})}
+var FN="АБВГДЕЖЗИКЛМНПРСТЦЧШЮЯ",LN="АБВГДЕЖЗИКЛМНОПРСТФХЧШ";
+var COL=["#1d4ed8","#0891b2","#7c3aed","#db2777","#ea580c","#16a34a","#ca8a04","#0f766e"];
+function rng(s){return function(){s=(s*1664525+1013904223)%4294967296;return s/4294967296}}
+function hs(s){var h=7;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%1000003;return h}
+function seed(){
+  var cl={};
+  for(var c=1;c<=4;c++){
+    var r=rng(c*7919+13),n=18+Math.floor(r()*8),seen={},a=[];
+    while(a.length<n){var x=FN[Math.floor(r()*FN.length)],y=LN[Math.floor(r()*LN.length)];if(!seen[x+y]){seen[x+y]=1;a.push([x,y])}}
+    a.sort(function(p,q){return p[1]<q[1]?-1:p[1]>q[1]?1:p[0]<q[0]?-1:1});
+    cl[c]=a.map(function(p,i){return{id:c+"-"+(i+1),a:p[0],b:p[1]}});
+  }
+  return{users:[
+    {id:"u0",name:"Администратор",email:"admin@e-students.bg",pass:"admin123",role:"admin",photo:""},
+    {id:"u1",name:"Мария Георгиева",email:"uchitel@e-students.bg",pass:"demo1234",role:"teacher",photo:""}
+  ],classes:cl,notes:{},nid:1000};
+}
+function load(){try{var s=JSON.parse(localStorage.getItem("es2"));if(s&&s.users&&s.classes)return s}catch(e){}return seed()}
+var S=load();S.assign=S.assign||{};
+function save(){try{localStorage.setItem("es2",JSON.stringify(S))}catch(e){}}
+var me=null,view="home",cc=1,sj=0,sel={},rmMode=false,last=null,tmr=null,cur=null;
+function ini(n){return n.trim().split(/\s+/).slice(0,2).map(function(w){return w[0].toUpperCase()}).join("")}
+function av(u,cls){return u.photo?'<img class="pimg '+(cls||"")+'" src="'+u.photo+'" alt="">':'<div class="av '+(cls||"")+'" style="background:'+COL[hs(u.id)%COL.length]+'">'+esc(ini(u.name))+'</div>'}
+
+/* ВХОД / ИЗХОД */
+function login(){
+  var e=$("em").value.trim().toLowerCase(),p=$("pw").value;
+  var u=S.users.filter(function(x){return x.email.toLowerCase()===e&&x.pass===p})[0];
+  if(!u){$("le").textContent="Грешен имейл или парола.";return}
+  me=u;$("le").textContent="";
+  $("login").style.display="none";$("app").style.display="block";
+  buildSide();buildWho();go("home");
+}
+function logout(){me=null;$("app").style.display="none";$("login").style.display="flex";$("side").classList.remove("show")}
+$("go").onclick=login;
+$("pw").onkeydown=$("em").onkeydown=function(e){if(e.key==="Enter")login()};
+
+/* ИЗГЛЕД */
+function buildWho(){$("who").innerHTML=""}
+function buildSide(){
+  var a=me.role==="admin",h='<button class="item" data-v="home">🏠 Начало</button>'
+   +'<button class="item open" id="cls">🎓 Класове <span class="chev">▾</span></button><div class="sub">';
+  for(var c=1;c<=4;c++)h+='<button data-c="'+c+'">'+c+' клас</button>';
+  h+='</div><button class="item" id="les">📝 Уроци <span class="chev">▾</span></button><div class="sub">'+LS.map(function(x,i){return'<button data-s="'+i+'">'+x.n+'</button>'}).join("")+'</div><button class="item" data-v="mat">📚 Материали</button>'
+   +(a?'<button class="item" data-v="adm">👩‍🏫 Учители</button>':'')
+   +'<button class="item" data-v="set">⚙️ Настройки</button>'
+   +'<button class="item out2" data-v="out">🚪 Излизане</button>';
+  $("side").innerHTML=h;
+}
+$("side").onclick=function(e){
+  var b=e.target.closest("button");if(!b)return;
+  if(b.id==="cls"||b.id==="les"){b.classList.toggle("open");return}
+  if(b.dataset.s){sj=+b.dataset.s;sel={};go("les");return}
+  if(b.dataset.c){cc=+b.dataset.c;rmMode=false;go("cls");return}
+  if(b.dataset.v==="out"){logout();return}
+  if(b.dataset.v)go(b.dataset.v);
+};
+$("burger").onclick=function(){$("side").classList.toggle("show")};
+function go(v){
+  view=v;
+  [].forEach.call($("side").querySelectorAll("[data-v]"),function(b){b.classList.toggle("on",b.dataset.v===v)});
+  [].forEach.call($("side").querySelectorAll("[data-c]"),function(b){b.classList.toggle("on",v==="cls"&&+b.dataset.c===cc)});
+  [].forEach.call($("side").querySelectorAll("[data-s]"),function(b){b.classList.toggle("on",v==="les"&&+b.dataset.s===sj)});
+  ({home:rHome,cls:rClass,les:rLes,mat:rMat,set:rSet,adm:rAdm})[v]();
+  $("side").classList.remove("show");window.scrollTo(0,0);
+}
+
+/* НАЧАЛО */
+function rHome(){
+  var t=0;for(var c=1;c<=4;c++)t+=S.classes[c].length;
+  var tc=S.users.filter(function(u){return u.role==="teacher"}).length;
+  $("main").innerHTML='<h1>Здравейте!</h1><p class="lead">Дигитална подкрепа за всяко дете</p>'
+  +'<div class="stats"><div class="stat"><b>4</b><span>класа (1–4)</span></div><div class="stat"><b>'+t+'</b><span>ученици</span></div>'
+  +(me.role==="admin"?'<div class="stat"><b>'+tc+'</b><span>учители</span></div>':'')
+  +'<div class="stat"><b>8</b><span>теми в Материали</span></div></div>'
+  +'<p class="lead">Изберете клас от менюто „Класове“, за да видите учениците, или разгледайте „Материали“ за практични насоки за подкрепа на деца със специфични нужди.</p>';
+}
+
+/* КЛАС */
+function rClass(){
+  var k=S.classes[cc];
+  $("main").innerHTML='<h1>'+cc+' клас</h1><p class="lead">Списък на учениците</p>'
+  +'<div class="tools"><span class="tag">'+k.length+' ученици</span><input id="q" placeholder="Търсене по инициали…">'
+  +'<button class="btn" id="ap">＋ Добави участник</button><button class="btn2 red'+(rmMode?' act':'')+'" id="rp">'+(rmMode?'✓ Готово':'－ Премахни участник')+'</button></div>'
+  +'<div class="panel" id="pa" style="display:none"><div class="row"><input id="nn" placeholder="Име и фамилия, напр. Мария Иванова"><button class="btn" id="ad">Добави</button></div><div class="err" id="ne"></div></div>'
+  +(rmMode?'<p class="lead" style="margin:0 0 12px;color:#dc2626">Режим „Премахване“: натиснете ученик, за да го премахнете от класа.</p>':'')
+  +'<div class="grid'+(rmMode?' rm':'')+'" id="g"></div>';
+  var g=$("g");
+  function draw(f){
+    g.innerHTML="";
+    k.forEach(function(p,i){
+      var t=p.a+". "+p.b+".";
+      if(f&&t.toLowerCase().indexOf(f.toLowerCase())<0)return;
+      var d=document.createElement("div");d.className="kid";
+      d.innerHTML='<div class="av" style="background:'+COL[(i+cc)%COL.length]+'">'+p.a+p.b+'</div><span>'+t+'</span><em class="num">№'+(i+1)+'</em>';
+      d.onclick=function(){rmMode?removeKid(p.id):openKid(p)};
+      g.appendChild(d);
+    });
+  }
+  draw("");
+  $("q").oninput=function(){draw(this.value.trim())};
+  $("ap").onclick=function(){var p=$("pa");p.style.display=p.style.display==="none"?"block":"none";if(p.style.display==="block")$("nn").focus()};
+  $("rp").onclick=function(){rmMode=!rmMode;rClass()};
+  function add(){
+    var v=$("nn").value.trim();
+    if(v.split(/\s+/).length<2||!/^[A-Za-zА-Яа-я]/.test(v)){$("ne").textContent="Въведете име и фамилия.";return}
+    var w=v.split(/\s+/);
+    S.classes[cc].push({id:"k"+(S.nid++),a:w[0][0].toUpperCase(),b:w[w.length-1][0].toUpperCase()});
+    save();rClass();
+  }
+  $("ad").onclick=add;$("nn").onkeydown=function(e){if(e.key==="Enter")add()};
+}
+function removeKid(id){
+  var k=S.classes[cc],i=k.findIndex(function(x){return x.id===id});if(i<0)return;
+  last={c:cc,i:i,kid:k[i]};k.splice(i,1);save();rClass();
+  $("tt").textContent="Ученикът е премахнат";$("toast").classList.add("on");
+  clearTimeout(tmr);tmr=setTimeout(function(){$("toast").classList.remove("on")},6000);
+}
+$("tu").onclick=function(){
+  if(last){S.classes[last.c].splice(last.i,0,last.kid);save();last=null;if(view==="cls")rClass()}
+  $("toast").classList.remove("on");
+};
+
+/* КАРТА НА УЧЕНИК */
+var SUBJ=["Български език","Математика","Околен свят","Четене","Английски език"];
+var DIF=["затруднява се със събиране и изваждане с преминаване","допуска грешки при удвоени съгласни","чете бавно на глас и губи реда","губи концентрация след около 15 минути","не разбира текстовите задачи","бърка таблицата за умножение"];
+var STR=["отличен е в устни отговори","работи чудесно в група","бързо схваща нагледен материал","проявява интерес към природата","много е креативен при рисуване и разказване","помага на съучениците си"];
+function hist(id){var r=rng(hs(id));return["12.09.2026","10.10.2026","07.11.2026"].map(function(d){return{d:d,s:SUBJ[Math.floor(r()*SUBJ.length)],f:DIF[Math.floor(r()*DIF.length)],g:STR[Math.floor(r()*STR.length)]}})}
+function renderHist(){
+  var s="";
+  hist(cur.id).forEach(function(m){s+='<div class="mt"><b>'+m.d+' · '+m.s+'</b><span class="f">Затруднение: '+m.f+'</span><br><span class="g">Силна страна: '+m.g+'</span></div>'});
+  (S.notes[cur.id]||[]).forEach(function(n){s+='<div class="mt"><b>'+esc(n.d)+' · Бележка</b>'+esc(n.t)+'</div>'});
+  var as=S.assign[cur.id]||[];
+  if(as.length)s+='<div class="sec">Уроци за следващата среща</div>'+as.map(function(a){return'<div class="mt"><b>'+esc(a.s)+'</b>'+esc(a.t)+(a.n?' · '+esc(a.n):'')+'</div>'}).join("");
+  $("mhist").innerHTML=s;
+}
+function openKid(p){
+  cur=p;
+  $("mh").innerHTML='<div class="av" style="background:'+COL[hs(p.id)%COL.length]+'">'+p.a+p.b+'</div><div><h2>'+p.a+'. '+p.b+'.</h2><small>'+cc+' клас</small></div>';
+  renderHist();$("nt").value="";$("md").classList.add("on");
+}
+$("mx").onclick=function(){$("md").classList.remove("on")};
+$("md").onclick=function(e){if(e.target===this)this.classList.remove("on")};
+$("addn").onclick=function(){
+  var v=$("nt").value.trim();if(!v||!cur)return;
+  (S.notes[cur.id]=S.notes[cur.id]||[]).push({d:new Date().toLocaleDateString("bg-BG"),t:v});
+  save();$("nt").value="";renderHist();
+};
+
+/* УРОЦИ */
+var LS=[
+{n:"Човека и Природата",i:"🌿",sug:["Растения и животни около нас","Водата в природата","Годишните времена","Човешкото тяло","Опазване на природата"]},
+{n:"Български език",i:"📖",sug:["Звукове и букви","Удвоени съгласни","Съществително име","Четене с разбиране","Правопис на ъ и а"]},
+{n:"Математика",i:"➗",sug:["Таблица за умножение","Събиране с преминаване","Текстови задачи","Мерни единици","Геометрични фигури"]},
+{n:"Човека и Обществото",i:"🏛️",sug:["Моето семейство","Правила за поведение","Български празници и традиции","Родният край на картата","Професиите около нас"]}];
+function rLes(){
+  var sb=LS[sj],k=S.classes[4];
+  $("main").innerHTML='<h1>'+sb.i+' '+sb.n+'</h1><p class="lead">4 клас · задайте урок, който ще се преподава на следващата среща</p>'
+  +'<div class="panel"><input id="lt" placeholder="Тема на урока"><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px" id="ch">'+sb.sug.map(function(t,i){return'<button class="chip" data-i="'+i+'">'+t+'</button>'}).join("")+'</div>'
+  +'<input id="ld" placeholder="Бележка за подготовка (по избор)"><div class="row"><button class="btn2" id="sa">Избери всички</button><button class="btn2" id="sc">Изчисти</button><button class="btn" id="sg">Задай урока</button></div><div class="err" id="se" style="margin-top:8px"></div></div>'
+  +'<div class="tools"><span class="tag">'+k.length+' ученици</span><span class="tag" id="sn">Избрани: '+Object.keys(sel).length+'</span></div><div class="grid" id="g"></div><div class="sec">Зададени уроци по '+sb.n+'</div><div id="al"></div>';
+  function cnt(){$("sn").textContent="Избрани: "+Object.keys(sel).length}
+  function drawG(){
+    var g=$("g");g.innerHTML="";
+    k.forEach(function(p,i){
+      var n=(S.assign[p.id]||[]).filter(function(a){return a.s===sb.n}).length,d=document.createElement("div");
+      d.className="kid"+(sel[p.id]?" sel":"");
+      d.innerHTML='<div class="av" style="background:'+COL[(i+4)%COL.length]+'">'+p.a+p.b+'</div><span>'+p.a+'. '+p.b+'.</span>'+(n?'<em class="bdg">'+n+'</em>':'');
+      d.onclick=function(){if(sel[p.id])delete sel[p.id];else sel[p.id]=1;d.classList.toggle("sel");cnt()};
+      g.appendChild(d);
+    });
+  }
+  function drawL(){
+    var s="";
+    k.forEach(function(p,j){
+      var as=S.assign[p.id]||[],t="";
+      as.forEach(function(a,i){if(a.s===sb.n)t+='<span class="tg">'+esc(a.t)+(a.n?' ('+esc(a.n)+')':'')+'<button data-k="'+p.id+'" data-i="'+i+'" aria-label="Премахни">✕</button></span>'});
+      if(t)s+='<div class="ul"><div class="av" style="background:'+COL[(j+4)%COL.length]+'">'+p.a+p.b+'</div><div><b>'+p.a+'. '+p.b+'.</b><div>'+t+'</div></div></div>';
+    });
+    $("al").innerHTML=s||'<p class="lead">Все още няма зададени уроци.</p>';
+  }
+  drawG();drawL();
+  $("ch").onclick=function(e){var b=e.target.closest("button");if(b)$("lt").value=sb.sug[+b.dataset.i]};
+  $("sa").onclick=function(){k.forEach(function(p){sel[p.id]=1});drawG();cnt()};
+  $("sc").onclick=function(){sel={};drawG();cnt()};
+  $("sg").onclick=function(){
+    var t=$("lt").value.trim(),n=$("ld").value.trim(),e=$("se"),ids=Object.keys(sel);
+    e.className="err";
+    if(!t){e.textContent="Въведете тема на урока.";return}
+    if(!ids.length){e.textContent="Изберете поне един ученик.";return}
+    var d=new Date().toLocaleDateString("bg-BG");
+    ids.forEach(function(id){
+      var a=S.assign[id]=S.assign[id]||[];
+      if(!a.some(function(x){return x.s===sb.n&&x.t===t}))a.push({s:sb.n,t:t,n:n,d:d});
+    });
+    save();sel={};$("lt").value=$("ld").value="";drawG();drawL();cnt();
+    e.className="ok";e.textContent="Урокът е зададен на "+ids.length+" ученици и ще се преподава на следващата среща.";
+  };
+  $("al").onclick=function(e){
+    var b=e.target.closest("button[data-k]");if(!b)return;
+    S.assign[b.dataset.k].splice(+b.dataset.i,1);save();drawG();drawL();
+  };
+}
+/* МАТЕРИАЛИ */
+var MAT=[
+["🧩","Допълнителна подкрепа за личностно развитие (ДОП)","В България подкрепата за личностно развитие е обща и допълнителна. Допълнителната се определя след оценка на индивидуалните потребности на детето от екип за подкрепа в училището. При нужда се включват ресурсен учител, психолог, логопед или рехабилитатор, а за консултации – Регионалният център за подкрепа на процеса на приобщаващото образование (РЦПППО).",["Подайте сигнал към училищния екип за подкрепа още при първите трайни затруднения.","Документирайте наблюденията – примери, дати, какво е помогнало.","Включете родителите като партньори от самото начало.","Конкретните процедури и срокове уточнявайте със структурите в училището и РЦПППО."]],
+["🗣️","Езикови и говорни трудности","Включват късно проговаряне, неправилно произнасяне на звукове, бедна реч и трудности в изграждането на изречения. Ранната логопедична работа дава най-добри резултати.",["Говорете бавно, с кратки и ясни изречения.","Повтаряйте правилно думата, без да поправяте детето пред класа.","Давайте му време да отговори и не довършвайте вместо него.","Използвайте картинки, жестове и четене на глас.","Насочете семейството към логопед."]],
+["📖","Дислексия и дисграфия","Специфични трудности при четене (дислексия) и писане (дисграфия), които не са свързани с ниска интелигентност. Детето често чете бавно, бърка букви и допуска много правописни грешки.",["Оценявайте знанията, а не само правописа и скоростта на четене.","Давайте повече време за писмени работи и по-голям, ясен шрифт.","Позволявайте устно изпитване при нужда.","Разделяйте дългите текстове на кратки части.","Хвалете усилието и напредъка."]],
+["➗","Дискалкулия","Трайни трудности с числата: разбиране на количества, смятане, таблица за умножение, часовник и пари.",["Работете с реални предмети, броячки и рисунки.","Обяснявайте стъпка по стъпка и преминавайте към абстрактното постепенно.","Разрешавайте таблица и калкулатор при нужда.","Свързвайте задачите с ежедневни ситуации (магазин, рецепти)."]],
+["⚡","Хиперактивност и дефицит на вниманието (ADHD)","Детето трудно задържа вниманието, действа импулсивно и има нужда от движение. Диагноза поставя специалист – не учителят.",["Поставяйте го на място с по-малко разсейващи фактори.","Давайте кратки, ясни и по една инструкция наведнъж.","Разделяйте задачите на малки стъпки с кратки паузи за движение.","Използвайте положително подсилване и ясни правила.","Давайте отговорности (раздаване на тетрадки, поливане на цветя)."]],
+["🌈","Аутистичен спектър","Деца с различен начин на общуване и възприемане на света: нужда от предвидимост, чувствителност към звуци, светлина и промени.",["Поддържайте ясен дневен ред и предупреждавайте за промени.","Използвайте визуални графици и конкретен, буквален език.","Осигурете тихо кътче за почивка при претоварване.","Обяснявайте социалните правила директно, с примери."]],
+["💙","Емоционални и поведенчески трудности, тревожност","Страх от изпитване, плач, затваряне в себе си, агресия или чести конфликти. Често зад поведението стои неудовлетворена нужда или напрежение.",["Реагирайте спокойно и разговаряйте насаме.","Назовавайте емоциите: „Виждам, че си разстроен.“","Договорете ясни правила и последствия, еднакви за всички.","Забелязвайте доброто поведение по-често от лошото.","При тревожни сигнали информирайте психолога и родителите."]],
+["🌍","Деца, за които българският не е майчин език","Деца от двуезични семейства или с миграционен опит могат да имат езикови затруднения, без да имат учебни проблеми.",["Използвайте визуални опори, картинки и жестове.","Говорете ясно, избягвайте идиоми и сложни конструкции.","Назначете съученик-помощник и насърчавайте участие в групови задачи.","Ценете и уважавайте майчиния език на детето."]]
+];
+function rMat(){
+  var h='<h1>Материали</h1><p class="lead">Насоки за подпомагане на деца със специфични образователни потребности</p>';
+  MAT.forEach(function(m){
+    h+='<details><summary><span>'+m[0]+'</span> '+m[1]+'</summary><div class="dc"><p style="margin:0">'+m[2]+'</p><ul>'+m[3].map(function(t){return'<li>'+t+'</li>'}).join("")+'</ul></div></details>';
+  });
+  h+='<div class="hint">Информацията е ориентировъчна и не замества мнението на специалист. Диагнози се поставят от психолози, логопеди, лекари и екипите за подкрепа.</div>';
+  $("main").innerHTML=h;
+}
+
+/* НАСТРОЙКИ */
+function rSet(){
+  $("main").innerHTML='<h1>Настройки</h1><p class="lead">Сигурност</p><div class="two"><div class="sbox"><h3>Промяна на парола</h3><input type="password" id="p0" placeholder="Текуща парола"><input type="password" id="p1" placeholder="Нова парола (мин. 6 знака)"><input type="password" id="p2" placeholder="Повторете новата парола"><div class="err" id="pe"></div><button class="btn" id="ps">Запази паролата</button></div></div>';
+  $("ps").onclick=function(){
+    var a=$("p0").value,b=$("p1").value,c=$("p2").value,e=$("pe");
+    e.className="err";
+    if(a!==me.pass){e.textContent="Текущата парола е грешна.";return}
+    if(b.length<6){e.textContent="Новата парола трябва да е поне 6 знака.";return}
+    if(b!==c){e.textContent="Паролите не съвпадат.";return}
+    me.pass=b;save();e.className="ok";e.textContent="Паролата е сменена.";
+    $("p0").value=$("p1").value=$("p2").value="";
+  };
+}
+function rSetOld(){
+  $("main").innerHTML='<h1>Настройки</h1><p class="lead">Профил и сигурност</p><div class="two">'
+  +'<div class="sbox"><h3>Профилна снимка</h3><div class="pr">'+av(me,"big")+'<div><b>'+esc(me.name)+'</b><div style="color:var(--mut);font-size:14px">'+esc(me.email)+'</div></div></div>'
+  +'<input type="file" id="ph" accept="image/*" style="display:none"><div class="row"><button class="btn" id="pb">Смени снимката</button>'+(me.photo?'<button class="btn2 red" id="pd">Премахни</button>':'')+'</div><div class="ok" id="pm"></div></div>'
+  +'<div class="sbox"><h3>Промяна на парола</h3><input type="password" id="p0" placeholder="Текуща парола"><input type="password" id="p1" placeholder="Нова парола (мин. 6 знака)"><input type="password" id="p2" placeholder="Повторете новата парола">'
+  +'<div class="err" id="pe"></div><button class="btn" id="ps">Запази паролата</button></div></div>';
+  $("pb").onclick=function(){$("ph").click()};
+  if($("pd"))$("pd").onclick=function(){me.photo="";save();buildWho();rSet()};
+  $("ph").onchange=function(){
+    var f=this.files[0];if(!f)return;
+    var r=new FileReader();
+    r.onload=function(){
+      var im=new Image();
+      im.onload=function(){
+        var c=document.createElement("canvas");c.width=c.height=160;
+        var s=Math.min(im.width,im.height),x=(im.width-s)/2,y=(im.height-s)/2;
+        c.getContext("2d").drawImage(im,x,y,s,s,0,0,160,160);
+        me.photo=c.toDataURL("image/jpeg",.85);save();buildWho();rSet();$("pm").textContent="Снимката е сменена.";
+      };
+      im.src=r.result;
+    };
+    r.readAsDataURL(f);
+  };
+  $("ps").onclick=function(){
+    var a=$("p0").value,b=$("p1").value,c=$("p2").value,e=$("pe");
+    if(a!==me.pass){e.textContent="Текущата парола е грешна.";return}
+    if(b.length<6){e.textContent="Новата парола трябва да е поне 6 знака.";return}
+    if(b!==c){e.textContent="Паролите не съвпадат.";return}
+    me.pass=b;save();e.className="ok";e.textContent="Паролата е сменена.";
+    $("p0").value=$("p1").value=$("p2").value="";
+  };
+}
+
+/* АДМИН: УЧИТЕЛИ */
+function rAdm(){
+  var h='<h1>Учители</h1><p class="lead">Добавяне и премахване на учителски профили</p>'
+  +'<div class="panel"><div class="row"><input id="tn" placeholder="Име и фамилия"><input id="te" type="email" placeholder="Имейл"><input id="tp" type="text" placeholder="Начална парола"></div>'
+  +'<div class="err" id="tr" style="margin-top:8px"></div><button class="btn" id="ta">＋ Добави учител</button></div><div id="tl"></div>';
+  $("main").innerHTML=h;
+  function list(){
+    var s="";
+    S.users.forEach(function(u){
+      s+='<div class="ul"><div><b>'+esc(u.name)+'</b><small>'+esc(u.email)+' · '+(u.role==="admin"?"Админ":"Учител")+'</small></div>'
+      +(u.role==="admin"?'':'<button class="btn2 red" data-id="'+u.id+'">Премахни</button>')+'</div>';
+    });
+    $("tl").innerHTML=s;
+  }
+  list();
+  $("tl").onclick=function(e){
+    var b=e.target.closest("button[data-id]");if(!b)return;
+    if(!b.classList.contains("act")){b.classList.add("act");b.textContent="Потвърди";return}
+    S.users=S.users.filter(function(u){return u.id!==b.dataset.id});save();list();
+  };
+  $("ta").onclick=function(){
+    var n=$("tn").value.trim(),m=$("te").value.trim(),p=$("tp").value,e=$("tr");
+    if(n.split(/\s+/).length<2||!/.+@.+\..+/.test(m)||p.length<6){e.textContent="Попълнете име и фамилия, валиден имейл и парола (мин. 6 знака).";return}
+    if(S.users.some(function(u){return u.email.toLowerCase()===m.toLowerCase()})){e.textContent="Вече има профил с този имейл.";return}
+    S.users.push({id:"u"+(S.nid++),name:n,email:m,pass:p,role:"teacher",photo:""});save();
+    e.textContent="";$("tn").value=$("te").value=$("tp").value="";list();
+  };
+}
+</script>
+</body>
+</html>
